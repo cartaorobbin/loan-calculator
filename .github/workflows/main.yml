@@ -53,6 +53,8 @@ jobs:
 
       - name: Build package
         run: python setup.py sdist bdist_wheel
+        env:
+          RELEASE_VERSION: "1.2.3"
 
       - name: Publish to CodeArtifact
         run: twine upload --repository codeartifact dist/*
