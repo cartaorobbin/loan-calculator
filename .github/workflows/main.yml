@@ -34,18 +34,18 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${env.AWS_OWNER}:role/github
+          role-to-assume: arn:aws:iam::${{ env.AWS_OWNER }}:role/github
           aws-region: us-east-1
 
       - name: Configure CodeArtifact in .pypirc
         run: |
-          CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain ${env.CODEARTIFACT_DOMAIN} --domain-owner ${env.AWS_OWNER} --query authorizationToken --output text)
+          CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain ${{ env.CODEARTIFACT_DOMAIN }} --domain-owner ${{ env.AWS_OWNER }} --query authorizationToken --output text)
           echo "[distutils]" > ~/.pypirc
           echo "index-servers =" >> ~/.pypirc
           echo "    codeartifact" >> ~/.pypirc
           echo "" >> ~/.pypirc
           echo "[codeartifact]" >> ~/.pypirc
-          echo "repository: $CODEARTIFACT_URL" >> ~/.pypirc
+          echo "repository: ${{ env.CODEARTIFACT_URL }}" >> ~/.pypirc
           echo "username: aws" >> ~/.pypirc
           echo "password: ${CODEARTIFACT_AUTH_TOKEN}" >> ~/.pypirc
 
