@@ -1,7 +1,5 @@
 from loan_calculator.pmt import constant_return_pmt
-from loan_calculator.schedule.base import (
-    BaseSchedule, AmortizationScheduleType
-)
+from loan_calculator.schedule.base import BaseSchedule, AmortizationScheduleType
 
 
 class BasePriceSchedule(BaseSchedule):
@@ -15,16 +13,10 @@ class BasePriceSchedule(BaseSchedule):
 
     def __init__(self, principal, daily_interest_rate, return_days):
 
-        self.pmt = constant_return_pmt(
-            principal,
-            daily_interest_rate,
-            return_days
-        )
+        self.pmt = constant_return_pmt(principal, daily_interest_rate, return_days)
 
         super(BasePriceSchedule, self).__init__(
-            principal,
-            daily_interest_rate,
-            return_days
+            principal, daily_interest_rate, return_days
         )
 
     def calculate_balance(self):
@@ -64,11 +56,15 @@ class BasePriceSchedule(BaseSchedule):
         r_days = self.return_days
 
         return [
-            (p *
-             ((1 + d) ** n) *
-             (1 -
-              sum(1 / (1 + d) ** m for m in r_days if m <= n) /
-              sum(1 / (1 + d) ** m for m in r_days)))
+            (
+                p
+                * ((1 + d) ** n)
+                * (
+                    1
+                    - sum(1 / (1 + d) ** m for m in r_days if m <= n)
+                    / sum(1 / (1 + d) ** m for m in r_days)
+                )
+            )
             for n in [0] + r_days
         ]
 
@@ -195,8 +191,7 @@ class RegressivePriceSchedule(BasePriceSchedule):
         """
 
         return [
-            self.pmt / (1 + self.daily_interest_rate) ** n
-            for n in self.return_days
+            self.pmt / (1 + self.daily_interest_rate) ** n for n in self.return_days
         ]
 
     def calculate_interest(self):

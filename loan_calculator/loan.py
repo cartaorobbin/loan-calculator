@@ -3,7 +3,10 @@ from datetime import timedelta
 from loan_calculator.schedule import SCHEDULE_TYPE_CLASS_MAP
 from loan_calculator.schedule.base import AmortizationScheduleType
 from loan_calculator.interest_rate import (
-    convert_to_daily_interest_rate, InterestRateType, YearSizeType)
+    convert_to_daily_interest_rate,
+    InterestRateType,
+    YearSizeType,
+)
 from loan_calculator.utils import count_days_between_dates
 
 
@@ -69,8 +72,8 @@ class Loan(object):
         self.year_size = year_size
         self.grace_period = grace_period
 
-        self.amortization_schedule_type = (
-            AmortizationScheduleType(amortization_schedule_type)
+        self.amortization_schedule_type = AmortizationScheduleType(
+            amortization_schedule_type
         )
 
         self.amortization_schedule_cls = SCHEDULE_TYPE_CLASS_MAP[
@@ -78,18 +81,22 @@ class Loan(object):
         ]
 
         if any(
-            self.capitalization_start_date >= r_date
-            for r_date in self.return_dates
+            self.capitalization_start_date >= r_date for r_date in self.return_dates
         ):
-            raise ValueError('Grace period can not exceed loan start.')
+            raise ValueError("Grace period can not exceed loan start.")
 
         self.amortization_schedule = self.amortization_schedule_cls(
             principal,
             self.daily_interest_rate,
             [
-                count_days_between_dates(self.capitalization_start_date, r_date, count_working_days=count_working_days, include_end_date=include_end_date)
+                count_days_between_dates(
+                    self.capitalization_start_date,
+                    r_date,
+                    count_working_days=count_working_days,
+                    include_end_date=include_end_date,
+                )
                 for r_date in return_dates
-            ]
+            ],
         )
 
         self.count_working_days = count_working_days
@@ -128,9 +135,7 @@ class Loan(object):
 
     @property
     def total_amortization(self):
-        return (
-            self.amortization_schedule.total_amortization   # pragma: no cover
-        )
+        return self.amortization_schedule.total_amortization  # pragma: no cover
 
     @property
     def total_interest(self):

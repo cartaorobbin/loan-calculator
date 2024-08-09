@@ -5,7 +5,7 @@ from loan_calculator.irr import approximate_irr
 
 class GrossupType(Enum):
 
-    iof = 'iof'
+    iof = "iof"
 
 
 class BaseGrossup(object):
@@ -31,7 +31,7 @@ class BaseGrossup(object):
         self.reference_date = reference_date
 
         self.base_loan = base_loan
-        self.grossed_up_loan = getattr(self, 'grossup', base_loan)(
+        self.grossed_up_loan = getattr(self, "grossup", base_loan)(
             base_loan, reference_date, *args
         )
 
@@ -58,5 +58,5 @@ class BaseGrossup(object):
                 (r_date - self.reference_date).days
                 for r_date in self.base_loan.return_dates
             ],
-            self.base_loan.daily_interest_rate
+            self.base_loan.daily_interest_rate,
         )

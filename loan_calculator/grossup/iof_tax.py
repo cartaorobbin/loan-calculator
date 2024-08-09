@@ -22,11 +22,7 @@ a fixed aliquot with its value defined by law.
 """
 
 
-def amortization_schedule_iof(
-        amortizations,
-        return_days,
-        daily_iof_aliquot=0.000082
-):
+def amortization_schedule_iof(amortizations, return_days, daily_iof_aliquot=0.000082):
     """IOF tax over an amortization schedule.
 
     If :math:`A_1,A_2\\ldots,A_k` are the amortizations,
@@ -106,11 +102,7 @@ def complementary_iof(principal, complementary_iof_fee=0.0038):
 
 
 def loan_iof(
-    principal,
-    amortizations,
-    return_days,
-    daily_iof_aliquot,
-    complementary_iof_aliquot
+    principal, amortizations, return_days, daily_iof_aliquot, complementary_iof_aliquot
 ):
     """The total IOF of a loan.
 
@@ -142,5 +134,6 @@ def loan_iof(
     d_iof = daily_iof_aliquot
     c_iof = complementary_iof_aliquot
 
-    return c_iof * p + sum(a * min(n * d_iof, 0.015)
-                           for a, n in zip(amortizations, return_days))
+    return c_iof * p + sum(
+        a * min(n * d_iof, 0.015) for a, n in zip(amortizations, return_days)
+    )

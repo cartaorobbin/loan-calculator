@@ -8,12 +8,12 @@ to very specific mathematical rule.
 
 
 def br_iof_regressive_price_grossup(
-        net_principal,
-        daily_interest_rate,
-        daily_iof_fee,
-        complementary_iof_fee,
-        return_days,
-        service_fee
+    net_principal,
+    daily_interest_rate,
+    daily_iof_fee,
+    complementary_iof_fee,
+    return_days,
+    service_fee,
 ):
     """Calculate the grossup of the given principal.
 
@@ -75,10 +75,7 @@ def br_iof_regressive_price_grossup(
     transport_coef = sum(1.0 / (1 + d) ** n for n in pmt_days)
 
     # iof coefficient
-    iof_coef = sum(
-        float(min(n * d_iof, 0.015)) / (1 + d) ** n
-        for n in pmt_days
-    )
+    iof_coef = sum(float(min(n * d_iof, 0.015)) / (1 + d) ** n for n in pmt_days)
 
     return p / (1 - (iof_coef / transport_coef) - c_iof - s_fee)
 
@@ -89,7 +86,7 @@ def br_iof_progressive_price_grossup(
     daily_iof_fee,
     complementary_iof_fee,
     return_days,
-    service_fee
+    service_fee,
 ):
     """Calculate the grossup of the principal for the given parameters.
 
@@ -154,21 +151,18 @@ def br_iof_progressive_price_grossup(
     transport_coef = sum(1.0 / (1 + d) ** n for n in pmt_days)
 
     # iof coefficient
-    iof_coef = sum(
-        float(min(n * d_iof, 0.015)) / (1 + d) ** n
-        for n in pmt_days[::-1]
-    )
+    iof_coef = sum(float(min(n * d_iof, 0.015)) / (1 + d) ** n for n in pmt_days[::-1])
 
     return p / (1 - (iof_coef / transport_coef) - c_iof - s_fee)
 
 
 def br_iof_constant_amortization_grossup(
-        net_principal,
-        daily_interest_rate,
-        daily_iof_fee,
-        complementary_iof_fee,
-        return_days,
-        service_fee
+    net_principal,
+    daily_interest_rate,
+    daily_iof_fee,
+    complementary_iof_fee,
+    return_days,
+    service_fee,
 ):
     """Calculate the grossup of the principal and given parameters.
 
@@ -212,9 +206,6 @@ def br_iof_constant_amortization_grossup(
     transport_coef = sum(1.0 / (1 + d) ** n for n in pmt_days)
 
     # iof coefficient
-    iof_coef = sum(
-        float(min(n * d_iof, 0.015)) / len(pmt_days)
-        for n in pmt_days
-    )
+    iof_coef = sum(float(min(n * d_iof, 0.015)) / len(pmt_days) for n in pmt_days)
 
     return p / (1 - (iof_coef / transport_coef) - c_iof - s_fee)

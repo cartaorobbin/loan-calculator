@@ -3,12 +3,12 @@ from loan_calculator.grossup.base import BaseGrossup
 from loan_calculator.grossup.functions import (
     br_iof_regressive_price_grossup,
     br_iof_progressive_price_grossup,
-    br_iof_constant_amortization_grossup
+    br_iof_constant_amortization_grossup,
 )
 from loan_calculator.schedule import (
     RegressivePriceSchedule,
     ProgressivePriceSchedule,
-    ConstantAmortizationSchedule
+    ConstantAmortizationSchedule,
 )
 from loan_calculator.utils import count_days_between_dates
 
@@ -60,7 +60,7 @@ class IofGrossup(BaseGrossup):
         reference_date,
         daily_iof_aliquot=0.000082,
         complementary_iof_aliquot=0.0038,
-        service_fee_aliquot=0.0
+        service_fee_aliquot=0.0,
     ):
         """Initialize IOF grossup."""
 
@@ -94,7 +94,12 @@ class IofGrossup(BaseGrossup):
                 daily_iof_aliquot,
                 complementary_iof_aliquot,
                 [
-                    count_days_between_dates(reference_date, r_date, count_working_days=False, include_end_date=True)
+                    count_days_between_dates(
+                        reference_date,
+                        r_date,
+                        count_working_days=False,
+                        include_end_date=loan.include_end_date,
+                    )
                     for r_date in loan.return_dates
                 ],
                 service_fee_aliquot,
@@ -105,6 +110,6 @@ class IofGrossup(BaseGrossup):
             loan.year_size,
             loan.grace_period,
             loan.amortization_schedule_type,
-            count_working_days = loan.count_working_days,
-            include_end_date = loan.include_end_date,
+            count_working_days=loan.count_working_days,
+            include_end_date=loan.include_end_date,
         )

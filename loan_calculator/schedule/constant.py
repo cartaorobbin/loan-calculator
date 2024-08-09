@@ -1,6 +1,4 @@
-from loan_calculator.schedule.base import (
-    BaseSchedule, AmortizationScheduleType
-)
+from loan_calculator.schedule.base import BaseSchedule, AmortizationScheduleType
 
 
 class ConstantAmortizationSchedule(BaseSchedule):
@@ -58,10 +56,7 @@ class ConstantAmortizationSchedule(BaseSchedule):
         instalments.
         """
 
-        return [
-            self.principal / len(self.return_days)
-            for _ in self.return_days
-        ]
+        return [self.principal / len(self.return_days) for _ in self.return_days]
 
     def calculate_interest(self):
         """Calculate the interest in each payment.
@@ -82,9 +77,9 @@ class ConstantAmortizationSchedule(BaseSchedule):
 
         return [
             b * ((1 + d) ** (n - m) - 1)
-            for b, n, m in zip(self.balance[:-1],
-                               self.return_days,
-                               [0] + self.return_days[:-1])
+            for b, n, m in zip(
+                self.balance[:-1], self.return_days, [0] + self.return_days[:-1]
+            )
         ]
 
     def calculate_due_payments(self):
@@ -113,7 +108,6 @@ class ConstantAmortizationSchedule(BaseSchedule):
         return [
             b * ((1 + d) ** (n - m) - 1) + p / k
             for b, n, m in zip(
-                self.balance[:-1],
-                self.return_days, [0] + self.return_days[:-1]
+                self.balance[:-1], self.return_days, [0] + self.return_days[:-1]
             )
         ]

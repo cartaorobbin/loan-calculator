@@ -44,13 +44,11 @@ def newton_raphson_solver(
 
     num_iterations = 1
 
-    while (
-        relative_error >= maximum_relative_error and
-        num_iterations < max_iterations
-    ):
+    while relative_error >= maximum_relative_error and num_iterations < max_iterations:
 
         past_point, iterating_point = (
-            iterating_point, _iterating_function(iterating_point)
+            iterating_point,
+            _iterating_function(iterating_point),
         )
         relative_error = _error_function(past_point, iterating_point)
 
@@ -95,14 +93,9 @@ def return_polynomial_factory(net_principal, returns, return_days):
 
     def return_polynomial(irr_):
 
-        powers_vec = [
-            (1 + irr_) ** (return_days[-1] - n) for n in [0] + return_days
-        ]
+        powers_vec = [(1 + irr_) ** (return_days[-1] - n) for n in [0] + return_days]
 
-        return sum(
-            coef * power
-            for coef, power in zip(coefficients_vec, powers_vec)
-        )
+        return sum(coef * power for coef, power in zip(coefficients_vec, powers_vec))
 
     return return_polynomial
 
@@ -156,13 +149,11 @@ def return_polynomial_derivative_factory(net_principal, returns, return_days):
     def return_polynomial_derivative(irr_):
 
         powers_vec = [
-            (1 + irr_) ** (return_days[-1] - r_day - 1)
-            for r_day in return_days
+            (1 + irr_) ** (return_days[-1] - r_day - 1) for r_day in return_days
         ]
 
         return sum(
-            coef * power
-            for coef, power in zip(derivative_coefficients_vec, powers_vec)
+            coef * power for coef, power in zip(derivative_coefficients_vec, powers_vec)
         )
 
     return return_polynomial_derivative
@@ -225,11 +216,11 @@ def approximate_irr(
         start point for the approximation of the IRR.
     """
 
-    return_polynomial = return_polynomial_factory(
-        net_principal, returns, return_days)
+    return_polynomial = return_polynomial_factory(net_principal, returns, return_days)
 
     return_polynomial_derivative = return_polynomial_derivative_factory(
-        net_principal, returns, return_days)
+        net_principal, returns, return_days
+    )
 
     return newton_raphson_solver(
         return_polynomial, return_polynomial_derivative, daily_interest_rate

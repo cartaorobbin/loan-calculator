@@ -10,8 +10,8 @@ SCHEDULE_TYPE_CLASS_MAP = {
 }
 
 __all__ = [
-    'ProgressivePriceSchedule',
-    'RegressivePriceSchedule',
-    'ConstantAmortizationSchedule',
-    'SCHEDULE_TYPE_CLASS_MAP',
+    "ProgressivePriceSchedule",
+    "RegressivePriceSchedule",
+    "ConstantAmortizationSchedule",
+    "SCHEDULE_TYPE_CLASS_MAP",
 ]

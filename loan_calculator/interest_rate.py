@@ -2,11 +2,11 @@ from enum import Enum, IntEnum
 
 
 class InterestRateType(Enum):
-    daily = 'daily'
-    annual = 'annual'
-    semiannual = 'semiannual'
-    monthly = 'monthly'
-    quarterly = 'quarterly'
+    daily = "daily"
+    annual = "annual"
+    semiannual = "semiannual"
+    monthly = "monthly"
+    quarterly = "quarterly"
 
 
 class YearSizeType(IntEnum):
@@ -17,9 +17,9 @@ class YearSizeType(IntEnum):
 def convert_to_daily_interest_rate(
     interest_rate_aliquot,
     interest_rate_type=InterestRateType.daily,
-    year_size=YearSizeType.commercial
+    year_size=YearSizeType.commercial,
 ):
-    """"Convert aliquots from a given rate to a daily interest rate.
+    """ "Convert aliquots from a given rate to a daily interest rate.
 
     This function will convert an aliquot from a given rate (as in
     InterestRateType) to a daily interest rate, since "a day" is the default
@@ -64,4 +64,4 @@ def convert_to_daily_interest_rate(
         # (1 + q)^4 = (1 + d)^365 => d = (1 + q)^(4/365) - 1
         return (1 + interest_rate_aliquot) ** (4 / year_size) - 1
     else:
-        raise TypeError('Unknown interest rate type')
+        raise TypeError("Unknown interest rate type")

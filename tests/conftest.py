@@ -12,7 +12,7 @@ def loan():
         1.0,
         date(2020, 1, 1),
         year_size=1,
-        return_dates=[date(2020, 1, 2), date(2020, 1, 3)]
+        return_dates=[date(2020, 1, 2), date(2020, 1, 3)],
     )
 
 
@@ -25,9 +25,8 @@ def loan_252():
         year_size=252,
         return_dates=[date(2024, 8, 28), date(2024, 9, 28)],
         count_working_days=True,
-        include_end_date=True
+        include_end_date=True,
     )
-
 
 
 @fixture()
@@ -41,7 +40,7 @@ def build_loan():
             date(2020, 1, 1),
             year_size=1,
             return_dates=[date(2020, 1, 2), date(2020, 1, 3)],
-            amortization_schedule_type=amortization_schedule_type
+            amortization_schedule_type=amortization_schedule_type,
         )
 
     return _build_loan

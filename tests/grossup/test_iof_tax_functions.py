@@ -4,7 +4,7 @@ from loan_calculator.grossup.iof_tax import (
     amortization_iof,
     complementary_iof,
     loan_iof,
-    amortization_schedule_iof
+    amortization_schedule_iof,
 )
 
 
@@ -13,7 +13,11 @@ def test_amortization_iof():
 
 
 def test_amortization_schedule_iof():
-    assert amortization_schedule_iof([200.0, 100.0], [1, 2], 1.0 / 200) == pytest.approx(2.0, rel=0.01)  # noqa
+    assert amortization_schedule_iof(
+        [200.0, 100.0], [1, 2], 1.0 / 200
+    ) == pytest.approx(
+        2.0, rel=0.01
+    )  # noqa
 
 
 def test_amortization_iof_aliquot_bound():
@@ -25,4 +29,8 @@ def test_complementary_iof():
 
 
 def test_loan_iof():
-    assert loan_iof(300.0, [100.0, 200.0], [1, 2], 1.0 / 200, 1.0 / 600) == pytest.approx(3.0, rel=0.01)  # noqa
+    assert loan_iof(
+        300.0, [100.0, 200.0], [1, 2], 1.0 / 200, 1.0 / 600
+    ) == pytest.approx(
+        3.0, rel=0.01
+    )  # noqa

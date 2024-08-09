@@ -8,9 +8,7 @@ class Projection(object):
     as the associated taxable event date
     """
 
-    def __init__(
-        self, loan, projection_dates, grossup_type=GrossupType.iof, *args
-    ):
+    def __init__(self, loan, projection_dates, grossup_type=GrossupType.iof, *args):
 
         self.loan = loan
         self.projection_dates = projection_dates
