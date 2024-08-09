@@ -1,8 +1,8 @@
 name: Publish to AWS CodeArtifact
 
 on:
-  push:
-    branches: [main]
+  # push:
+  #   branches: [main]
   release:
     types: [published]
     branches: [main]
@@ -23,6 +23,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Export tag
+        id: vars
+        run: echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT
+      
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -54,7 +58,7 @@ jobs:
       - name: Build package
         run: python setup.py sdist bdist_wheel
         env:
-          RELEASE_VERSION: "1.2.3"
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
 
       - name: Publish to CodeArtifact
         run: twine upload --repository codeartifact dist/*
