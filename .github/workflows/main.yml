@@ -1,6 +1,9 @@
 name: Publish to AWS CodeArtifact
 
-on: workflow_dispatch
+on:
+  release:
+    types: [published]
+    branches: [main]
 
 env:
   CODEARTIFACT_URL: https://robbin-906828889059.d.codeartifact.us-east-1.amazonaws.com/pypi/pypi/
