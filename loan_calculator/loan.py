@@ -4,6 +4,7 @@ from loan_calculator.schedule import SCHEDULE_TYPE_CLASS_MAP
 from loan_calculator.schedule.base import AmortizationScheduleType
 from loan_calculator.interest_rate import (
     convert_to_daily_interest_rate, InterestRateType, YearSizeType)
+from loan_calculator.utils import count_days_between_dates
 
 
 class Loan(object):
@@ -44,7 +45,8 @@ class Loan(object):
         grace_period=0,
         amortization_schedule_type=(
             AmortizationScheduleType.progressive_price_schedule.value
-        )
+        ),
+        count_last_day=False,
     ):
         """Initialize loan."""
 
@@ -84,7 +86,7 @@ class Loan(object):
             principal,
             self.daily_interest_rate,
             [
-                (r_date - self.capitalization_start_date).days
+                count_days_between_dates(self.capitalization_start_date, r_date)
                 for r_date in return_dates
             ]
         )

@@ -1,4 +1,5 @@
 pip
+holidays
 bump2version
 wheel
 watchdog
