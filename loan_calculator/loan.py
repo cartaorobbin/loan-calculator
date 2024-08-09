@@ -46,7 +46,7 @@ class Loan(object):
         amortization_schedule_type=(
             AmortizationScheduleType.progressive_price_schedule.value
         ),
-        count_last_day=False,
+        include_end_day=False,
     ):
         """Initialize loan."""
 
