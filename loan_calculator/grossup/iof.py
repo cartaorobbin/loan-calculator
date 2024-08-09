@@ -10,6 +10,7 @@ from loan_calculator.schedule import (
     ProgressivePriceSchedule,
     ConstantAmortizationSchedule
 )
+from loan_calculator.utils import count_days_between_dates
 
 
 class IofGrossup(BaseGrossup):
@@ -93,7 +94,7 @@ class IofGrossup(BaseGrossup):
                 daily_iof_aliquot,
                 complementary_iof_aliquot,
                 [
-                    (r_date - reference_date).days
+                    count_days_between_dates(reference_date, r_date, count_working_days=False, include_end_date=True)
                     for r_date in loan.return_dates
                 ],
                 service_fee_aliquot,
@@ -103,5 +104,7 @@ class IofGrossup(BaseGrossup):
             loan.return_dates,
             loan.year_size,
             loan.grace_period,
-            loan.amortization_schedule_type
+            loan.amortization_schedule_type,
+            count_working_days = loan.count_working_days,
+            include_end_date = loan.include_end_date,
         )

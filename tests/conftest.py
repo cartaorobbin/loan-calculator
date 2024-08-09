@@ -17,6 +17,20 @@ def loan():
 
 
 @fixture()
+def loan_252():
+    return Loan(
+        10000.0,
+        0.2668,
+        date(2024, 8, 7),
+        year_size=252,
+        return_dates=[date(2024, 8, 28), date(2024, 9, 28)],
+        count_working_days=True,
+        include_end_date=True
+    )
+
+
+
+@fixture()
 def build_loan():
 
     def _build_loan(amortization_schedule_type):

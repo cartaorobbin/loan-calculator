@@ -46,7 +46,8 @@ class Loan(object):
         amortization_schedule_type=(
             AmortizationScheduleType.progressive_price_schedule.value
         ),
-        include_end_day=False,
+        count_working_days=False,
+        include_end_date=False,
     ):
         """Initialize loan."""
 
@@ -86,10 +87,13 @@ class Loan(object):
             principal,
             self.daily_interest_rate,
             [
-                count_days_between_dates(self.capitalization_start_date, r_date)
+                count_days_between_dates(self.capitalization_start_date, r_date, count_working_days=count_working_days, include_end_date=include_end_date)
                 for r_date in return_dates
             ]
         )
+
+        self.count_working_days = count_working_days
+        self.include_end_date = include_end_date
 
     @property
     def amortization_function(self):
