@@ -49,3 +49,50 @@ def test_proper_interest_rate_conversion_on_loan_initialization():
     ).daily_interest_rate == pytest.approx(
         0.0011114805470662237
     )  # noqa
+
+
+def test_loan_252():
+
+    loan_252 = Loan(
+        10053.25,
+        0.2668,
+        date(2024, 8, 7),
+        year_size=252,
+        return_dates=[date(2024, 8, 28), date(2024, 9, 28)],
+        count_working_days=True,
+        include_end_date=True,
+        amortization_schedule_type='progressive-price-schedule',
+    )
+
+    assert loan_252.balance[0] == pytest.approx(10053.25)
+    assert loan_252.balance[1] == pytest.approx(5049.99,  rel=0.0001)
+    assert loan_252.balance[2] == pytest.approx(0,  rel=0.0001)
+
+    assert loan_252.interest_payments[0] == pytest.approx(152.09, rel=0.0001)
+    assert loan_252.interest_payments[1] == pytest.approx(105.33, rel=0.01)
+
+    assert loan_252.balance[1] == loan_252.balance[0] - loan_252.amortizations[0]
+
+    assert loan_252.amortizations[0] == pytest.approx(5003.25, rel=0.0001)
+    assert loan_252.amortizations[1] == pytest.approx(5049.99, rel=0.0001)
+
+
+@pytest.mark.parametrize('principal', range(100, 3000, 100))
+@pytest.mark.parametrize('annual_interest_rate', range(5, 99))
+def test_loan_252_relations(principal, annual_interest_rate):
+
+    loan_252 = Loan(
+        principal,
+        annual_interest_rate / 100,
+        date(2024, 8, 7),
+        year_size=252,
+        return_dates=[date(2024, 8, 28), date(2024, 9, 28), date(2024, 10, 28), date(2024, 11, 28)],
+        count_working_days=True,
+        include_end_date=True,
+        amortization_schedule_type='progressive-price-schedule',
+    )
+
+    assert loan_252.balance[1] == pytest.approx(loan_252.balance[0] - loan_252.amortizations[0], 0.0001)
+    
+    assert loan_252.balance[2] == pytest.approx(loan_252.balance[1] - loan_252.amortizations[1], 0.0001)
+    assert loan_252.balance[3] == pytest.approx(loan_252.balance[2] - loan_252.amortizations[2], 0.0001)

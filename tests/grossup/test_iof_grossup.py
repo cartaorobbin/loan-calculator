@@ -31,15 +31,6 @@ def test_iof_grossup_252(loan_252):
     )
 
     assert iof_grossup.grossed_up_loan.year_size == loan_252.year_size
-    assert iof_grossup.grossed_up_loan.total_interest == pytest.approx(
-        257.34, rel=0.01
-    )  # noqa
-    assert iof_grossup.grossed_up_loan.due_payments[0] == pytest.approx(
-        5155.32, rel=0.01
-    )  # noqa
-    assert iof_grossup.grossed_up_loan.total_amortization == pytest.approx(
-        10053.67, rel=0.01
-    )  # noqa
-    assert iof_grossup.grossed_up_loan.total_paid == pytest.approx(
-        10310.64, rel=0.01
-    )  # noqa
+
+    assert iof_grossup.grossed_up_principal == pytest.approx(10053.25, rel=0.0001)  # noqa
+

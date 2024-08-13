@@ -119,11 +119,18 @@ class ProgressivePriceSchedule(BasePriceSchedule):
         where :math:`d` is the daily interest rate, :math:`P` is the PMT,
         and :math:`n_1,\\ldots,n_k` are the return days.
         """
+        
+        ret = []
 
-        return [
-            self.pmt * (1.0 - 1.0 / (1 + self.daily_interest_rate) ** n)
-            for n in self.return_days[::-1]
-        ]
+        for i, n in enumerate(self.return_days):
+
+            if i > 0:
+                n = self.return_days[i] - self.return_days[i - 1]
+
+            ret.append((self.balance[i] * (1 + self.daily_interest_rate) ** n) - self.balance[i])
+
+        return ret
+
 
     def calculate_amortizations(self):
         """Calculate the principal amortization due to each payment.
@@ -140,8 +147,7 @@ class ProgressivePriceSchedule(BasePriceSchedule):
         """
 
         return [
-            self.pmt / (1 + self.daily_interest_rate) ** n
-            for n in self.return_days[::-1]
+            self.pmt - c for c in self.calculate_interest()
         ]
 
 

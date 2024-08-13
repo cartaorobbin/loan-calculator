@@ -106,3 +106,5 @@ ENV/
 .vscode
 
 .devcontainer/devcontainer.env
+
+.DS_Store
