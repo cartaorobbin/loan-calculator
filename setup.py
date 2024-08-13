@@ -52,6 +52,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/yanomateus/loan-calculator",
-    version=os.environ.get('RELEASE_VERSION',"1.2.2"),
+    version=os.environ.get("RELEASE_VERSION", "1.2.2"),
     zip_safe=False,
 )

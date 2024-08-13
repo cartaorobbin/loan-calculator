@@ -25,14 +25,14 @@ class BaseGrossup(object):
         Passed as args to grossup implementation.
     """
 
-    def __init__(self, base_loan, reference_date, *args):
+    def __init__(self, base_loan, reference_date, *args, **kwargs):
         """Initialize grossup."""
 
         self.reference_date = reference_date
 
         self.base_loan = base_loan
         self.grossed_up_loan = getattr(self, "grossup", base_loan)(
-            base_loan, reference_date, *args
+            base_loan, reference_date, *args, **kwargs
         )
 
     def grossup(self, *args, **kwargs):

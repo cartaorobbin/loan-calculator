@@ -6,6 +6,11 @@ is the one obtained after subtracting due taxes and service fees according
 to very specific mathematical rule.
 """
 
+from copy import copy
+from loan_calculator.grossup.iof_tax import loan_iof
+from loan_calculator.loan import Loan
+from loan_calculator.utils import count_days_between_dates
+
 
 def br_iof_regressive_price_grossup(
     net_principal,
@@ -14,6 +19,7 @@ def br_iof_regressive_price_grossup(
     complementary_iof_fee,
     return_days,
     service_fee,
+    **kwargs,
 ):
     """Calculate the grossup of the given principal.
 
@@ -87,6 +93,7 @@ def br_iof_progressive_price_grossup(
     complementary_iof_fee,
     return_days,
     service_fee,
+    **kwargs,
 ):
     """Calculate the grossup of the principal for the given parameters.
 
@@ -163,6 +170,7 @@ def br_iof_constant_amortization_grossup(
     complementary_iof_fee,
     return_days,
     service_fee,
+    **kwargs,
 ):
     """Calculate the grossup of the principal and given parameters.
 
@@ -209,3 +217,97 @@ def br_iof_constant_amortization_grossup(
     iof_coef = sum(float(min(n * d_iof, 0.015)) / len(pmt_days) for n in pmt_days)
 
     return p / (1 - (iof_coef / transport_coef) - c_iof - s_fee)
+
+
+def br_iof_progressive_price_grossup_analytical(
+    net_principal,
+    daily_interest_rate,
+    daily_iof_fee,
+    complementary_iof_fee,
+    return_days,
+    service_fee,
+    return_dates,
+    amortizations,
+    capitalization_start_date,
+    annual_interest_rate,
+    year_size,
+    count_working_days,
+    include_end_date,
+    **kwargs,
+):
+
+    from scipy.optimize import fsolve
+
+    def _inner(
+        net_principal,
+        target_principal,
+        daily_interest_rate,
+        daily_iof_fee,
+        complementary_iof_fee,
+        return_days,
+        service_fee,
+        return_dates,
+        amortizations,
+        capitalization_start_date,
+        annual_interest_rate,
+        year_size,
+        count_working_days,
+        include_end_date,
+
+    ):
+
+        loan = Loan(
+            principal=net_principal[0],
+            annual_interest_rate=annual_interest_rate,
+            return_dates=return_dates,
+            start_date=capitalization_start_date,
+            year_size=year_size,
+            count_working_days=count_working_days,
+            include_end_date=include_end_date,
+        )
+
+        iof = loan_iof(
+            loan.principal,
+            loan.amortizations,
+            [
+                count_days_between_dates(loan.capitalization_start_date, d)
+                for d in loan.return_dates
+            ],
+            daily_iof_aliquot=daily_iof_fee,
+            complementary_iof_aliquot=complementary_iof_fee,
+        )
+       
+        return loan.principal - iof - target_principal
+
+    iof = loan_iof(
+        net_principal,
+        amortizations,
+        [
+            count_days_between_dates(capitalization_start_date, d)
+            for d in return_dates
+        ],
+        daily_iof_aliquot=0.000041,
+        complementary_iof_aliquot=0.0038,
+    )
+    
+    principal = fsolve(
+        _inner,
+        net_principal + iof,
+        args=(
+            net_principal,
+            daily_interest_rate,
+            daily_iof_fee,
+            complementary_iof_fee,
+            return_days,
+            service_fee,
+            return_dates,
+            amortizations,
+            capitalization_start_date,
+            annual_interest_rate,
+            year_size,
+            count_working_days,
+            include_end_date,
+        ),
+    )
+
+    return principal[0]

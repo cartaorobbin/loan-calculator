@@ -1,9 +1,13 @@
+from itertools import count
+from tracemalloc import start
+from loan_calculator.grossup.iof_tax import amortization_iof
 from loan_calculator.loan import Loan
 from loan_calculator.grossup.base import BaseGrossup
 from loan_calculator.grossup.functions import (
     br_iof_regressive_price_grossup,
     br_iof_progressive_price_grossup,
     br_iof_constant_amortization_grossup,
+    br_iof_progressive_price_grossup_analytical,
 )
 from loan_calculator.schedule import (
     RegressivePriceSchedule,
@@ -61,6 +65,7 @@ class IofGrossup(BaseGrossup):
         daily_iof_aliquot=0.000082,
         complementary_iof_aliquot=0.0038,
         service_fee_aliquot=0.0,
+        strategy="numerical",
     ):
         """Initialize IOF grossup."""
 
@@ -70,6 +75,7 @@ class IofGrossup(BaseGrossup):
             daily_iof_aliquot,
             complementary_iof_aliquot,
             service_fee_aliquot,
+            strategy=strategy,
         )
 
     def grossup(
@@ -79,16 +85,22 @@ class IofGrossup(BaseGrossup):
         daily_iof_aliquot,
         complementary_iof_aliquot,
         service_fee_aliquot,
+        strategy,
     ):
 
         dispatch_table = {
-            RegressivePriceSchedule: br_iof_regressive_price_grossup,
-            ProgressivePriceSchedule: br_iof_progressive_price_grossup,
-            ConstantAmortizationSchedule: br_iof_constant_amortization_grossup,
+            "numerical": {
+                RegressivePriceSchedule: br_iof_regressive_price_grossup,
+                ProgressivePriceSchedule: br_iof_progressive_price_grossup,
+                ConstantAmortizationSchedule: br_iof_constant_amortization_grossup,
+            },
+            "analytical": {
+                ProgressivePriceSchedule: br_iof_progressive_price_grossup_analytical,
+            },
         }
 
         return Loan(
-            dispatch_table[loan.amortization_schedule_cls](
+            dispatch_table[strategy][loan.amortization_schedule_cls](
                 loan.principal,
                 loan.daily_interest_rate,
                 daily_iof_aliquot,
@@ -98,11 +110,18 @@ class IofGrossup(BaseGrossup):
                         reference_date,
                         r_date,
                         count_working_days=False,
-                        include_end_date=loan.include_end_date,
+                        include_end_date=False,
                     )
                     for r_date in loan.return_dates
                 ],
                 service_fee_aliquot,
+                return_dates=loan.return_dates,
+                amortizations=loan.amortizations,
+                capitalization_start_date=loan.capitalization_start_date,
+                annual_interest_rate=loan.annual_interest_rate,
+                year_size=loan.year_size,
+                count_working_days=loan.count_working_days,
+                include_end_date=loan.include_end_date,
             ),
             loan.annual_interest_rate,
             loan.start_date,
