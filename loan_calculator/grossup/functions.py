@@ -310,4 +310,4 @@ def br_iof_progressive_price_grossup_analytical(
         ),
     )
 
-    return principal[0]
+    return float(principal[0])
