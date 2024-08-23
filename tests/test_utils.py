@@ -16,7 +16,7 @@ def test_display_summary_shows_expected_loan_summary(capsys):
     """
     loan = Loan(
         principal=10000.00,  # principal
-        annual_interest_rate=0.05,  # annual interest rate
+        interest_rate=0.05,  # annual interest rate
         start_date=date(2020, 1, 5),  # start date
         return_dates=[
             date(2020, 2, 12),  # expected return date

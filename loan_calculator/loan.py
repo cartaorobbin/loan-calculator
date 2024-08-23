@@ -3,6 +3,7 @@ from datetime import timedelta
 from loan_calculator.schedule import SCHEDULE_TYPE_CLASS_MAP
 from loan_calculator.schedule.base import AmortizationScheduleType
 from loan_calculator.interest_rate import (
+    convert_interest_rate,
     convert_to_daily_interest_rate,
     InterestRateType,
     YearSizeType,
@@ -41,7 +42,7 @@ class Loan(object):
     def __init__(
         self,
         principal,
-        annual_interest_rate,
+        interest_rate,
         start_date,
         return_dates,
         year_size=YearSizeType.commercial,
@@ -51,17 +52,18 @@ class Loan(object):
         ),
         count_working_days=False,
         include_end_date=False,
+        interest_rate_type=InterestRateType.annual,
     ):
         """Initialize loan."""
 
         self.principal = principal
 
-        self.annual_interest_rate = annual_interest_rate
+        self.annual_interest_rate = convert_interest_rate(
+            interest_rate, interest_rate_type, InterestRateType.annual, year_size
+        )
 
-        self.daily_interest_rate = convert_to_daily_interest_rate(
-            annual_interest_rate,
-            InterestRateType.annual,
-            year_size,
+        self.daily_interest_rate = convert_interest_rate(
+            interest_rate, interest_rate_type, InterestRateType.daily, year_size
         )
 
         self.start_date = start_date

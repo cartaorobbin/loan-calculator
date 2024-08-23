@@ -253,12 +253,11 @@ def br_iof_progressive_price_grossup_analytical(
         year_size,
         count_working_days,
         include_end_date,
-
     ):
 
         loan = Loan(
             principal=net_principal[0],
-            annual_interest_rate=annual_interest_rate,
+            interest_rate=annual_interest_rate,
             return_dates=return_dates,
             start_date=capitalization_start_date,
             year_size=year_size,
@@ -276,20 +275,17 @@ def br_iof_progressive_price_grossup_analytical(
             daily_iof_aliquot=daily_iof_fee,
             complementary_iof_aliquot=complementary_iof_fee,
         )
-       
+
         return loan.principal - iof - target_principal
 
     iof = loan_iof(
         net_principal,
         amortizations,
-        [
-            count_days_between_dates(capitalization_start_date, d)
-            for d in return_dates
-        ],
+        [count_days_between_dates(capitalization_start_date, d) for d in return_dates],
         daily_iof_aliquot=0.000041,
         complementary_iof_aliquot=0.0038,
     )
-    
+
     principal = fsolve(
         _inner,
         net_principal + iof,

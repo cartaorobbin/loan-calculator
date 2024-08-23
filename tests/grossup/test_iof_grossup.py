@@ -75,17 +75,18 @@ def test_iof_grossup_252_analitical(loan_252):
     )  # noqa
 
 
-
 @pytest.mark.parametrize("principal", range(1000, 11000, 1000))
 @pytest.mark.parametrize("annual_interest_rate", range(5, 95, 5))
 @pytest.mark.parametrize("instalment_number", [3, 6, 9, 12])
-def test_iof_grossup_252_5_analitical(principal, annual_interest_rate, instalment_number):
+def test_iof_grossup_252_5_analitical(
+    principal, annual_interest_rate, instalment_number
+):
 
     start_date = date(2024, 8, 7)
     first_payment = date(2024, 8, 28)
     return_dates = [first_payment]
     for a in range(1, instalment_number):
-        return_dates.append(return_dates[-1] +  relativedelta(months=1))
+        return_dates.append(return_dates[-1] + relativedelta(months=1))
 
     loan = Loan(
         principal,
@@ -108,11 +109,19 @@ def test_iof_grossup_252_5_analitical(principal, annual_interest_rate, instalmen
 
     assert iof_grossup.grossed_up_loan.year_size == loan.year_size
 
-    iof = loan_iof(iof_grossup.grossed_up_loan.principal, iof_grossup.grossed_up_loan.amortizations, 
-            [count_days_between_dates(iof_grossup.grossed_up_loan.capitalization_start_date, d) for d in iof_grossup.grossed_up_loan.return_dates], 
-            daily_iof_aliquot=0.000041, complementary_iof_aliquot=0.0038)
+    iof = loan_iof(
+        iof_grossup.grossed_up_loan.principal,
+        iof_grossup.grossed_up_loan.amortizations,
+        [
+            count_days_between_dates(
+                iof_grossup.grossed_up_loan.capitalization_start_date, d
+            )
+            for d in iof_grossup.grossed_up_loan.return_dates
+        ],
+        daily_iof_aliquot=0.000041,
+        complementary_iof_aliquot=0.0038,
+    )
 
-
-    assert iof_grossup.grossed_up_loan.principal - iof  == pytest.approx(
+    assert iof_grossup.grossed_up_loan.principal - iof == pytest.approx(
         principal, rel=0.000001
     )  # noqa
