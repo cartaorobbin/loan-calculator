@@ -234,6 +234,7 @@ def br_iof_progressive_price_grossup_analytical(
     count_working_days,
     include_end_date,
     month_size,
+    round_strategy,
     **kwargs,
 ):
 
@@ -255,6 +256,7 @@ def br_iof_progressive_price_grossup_analytical(
         count_working_days,
         include_end_date,
         month_size,
+        round_strategy,
     ):
 
         loan = Loan(
@@ -266,6 +268,7 @@ def br_iof_progressive_price_grossup_analytical(
             month_size=month_size,
             count_working_days=count_working_days,
             include_end_date=include_end_date,
+            round_strategy=round_strategy,
         )
         iof = loan_iof(
             loan.principal,
@@ -306,6 +309,7 @@ def br_iof_progressive_price_grossup_analytical(
             count_working_days,
             include_end_date,
             month_size,
+            round_strategy,
         ),
     )
 

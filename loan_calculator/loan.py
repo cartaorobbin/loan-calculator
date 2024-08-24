@@ -1,4 +1,5 @@
 from datetime import timedelta
+from enum import Enum
 
 from loan_calculator.schedule import SCHEDULE_TYPE_CLASS_MAP
 from loan_calculator.schedule.base import AmortizationScheduleType
@@ -9,6 +10,13 @@ from loan_calculator.interest_rate import (
     YearSizeType,
 )
 from loan_calculator.utils import count_days_between_dates
+
+
+class RoundStrategy(Enum):
+    none = None
+    simple = "simple"
+    by_diference = "by_diference"
+
 
 
 class Loan(object):
@@ -54,6 +62,7 @@ class Loan(object):
         include_end_date=False,
         interest_rate_type=InterestRateType.annual,
         month_size=None,
+        round_strategy=RoundStrategy.none,
     ):
         """Initialize loan."""
 
@@ -75,6 +84,7 @@ class Loan(object):
         self.year_size = year_size
         self.month_size = month_size
         self.grace_period = grace_period
+        self.round_strategy = round_strategy
 
         self.amortization_schedule_type = AmortizationScheduleType(
             amortization_schedule_type
@@ -135,6 +145,8 @@ class Loan(object):
 
     @property
     def amortizations(self):
+        if self.round_strategy == RoundStrategy.simple:
+            return [round(amortization, 2) for amortization in self.amortization_schedule.amortizations]
         return self.amortization_schedule.amortizations  # pragma: no cover
 
     @property

@@ -124,6 +124,7 @@ class IofGrossup(BaseGrossup):
                 month_size=loan.month_size,
                 count_working_days=loan.count_working_days,
                 include_end_date=loan.include_end_date,
+                round_strategy=loan.round_strategy,
             ),
             loan.annual_interest_rate,
             loan.start_date,
@@ -133,4 +134,5 @@ class IofGrossup(BaseGrossup):
             loan.amortization_schedule_type,
             count_working_days=loan.count_working_days,
             include_end_date=loan.include_end_date,
+            round_strategy=loan.round_strategy,
         )
