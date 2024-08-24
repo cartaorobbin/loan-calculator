@@ -53,17 +53,18 @@ class Loan(object):
         count_working_days=False,
         include_end_date=False,
         interest_rate_type=InterestRateType.annual,
+        month_size=None,
     ):
         """Initialize loan."""
 
         self.principal = principal
 
         self.annual_interest_rate = convert_interest_rate(
-            interest_rate, interest_rate_type, InterestRateType.annual, year_size
+            interest_rate, interest_rate_type, InterestRateType.annual, year_size, month_size
         )
 
         self.daily_interest_rate = convert_interest_rate(
-            interest_rate, interest_rate_type, InterestRateType.daily, year_size
+            interest_rate, interest_rate_type, InterestRateType.daily, year_size, month_size
         )
 
         self.start_date = start_date
@@ -72,6 +73,7 @@ class Loan(object):
         self.return_dates = return_dates
 
         self.year_size = year_size
+        self.month_size = month_size
         self.grace_period = grace_period
 
         self.amortization_schedule_type = AmortizationScheduleType(

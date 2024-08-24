@@ -1,5 +1,7 @@
 from itertools import count
 from tracemalloc import start
+
+
 from loan_calculator.grossup.iof_tax import amortization_iof
 from loan_calculator.loan import Loan
 from loan_calculator.grossup.base import BaseGrossup
@@ -98,7 +100,6 @@ class IofGrossup(BaseGrossup):
                 ProgressivePriceSchedule: br_iof_progressive_price_grossup_analytical,
             },
         }
-
         return Loan(
             dispatch_table[strategy][loan.amortization_schedule_cls](
                 loan.principal,
@@ -120,6 +121,7 @@ class IofGrossup(BaseGrossup):
                 capitalization_start_date=loan.capitalization_start_date,
                 annual_interest_rate=loan.annual_interest_rate,
                 year_size=loan.year_size,
+                month_size=loan.month_size,
                 count_working_days=loan.count_working_days,
                 include_end_date=loan.include_end_date,
             ),

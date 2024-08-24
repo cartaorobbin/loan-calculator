@@ -73,10 +73,23 @@ def convert_interest_rate(
         return (1 + interest_rate_aliquot) ** (2 / year_size) - 1
     elif (
         from_rate_type == InterestRateType.monthly
+        and to_rate_type == InterestRateType.annual
+    ):
+        # (1 + m)^12 = (1 + d)^365 => d = (1 + m)^(12/365) - 1
+        return (1 + interest_rate_aliquot) ** (12) - 1
+    elif (
+        from_rate_type == InterestRateType.annual
+        and to_rate_type == InterestRateType.monthly
+    ):
+        # (1 + m)^12 = (1 + d)^365 => d = (1 + m)^(12/365) - 1
+        return (1 + interest_rate_aliquot) ** (1/12) - 1
+    elif (
+        from_rate_type == InterestRateType.monthly
         and to_rate_type == InterestRateType.daily
     ):
         # (1 + m)^12 = (1 + d)^365 => d = (1 + m)^(12/365) - 1
         month_size = month_size or year_size / 12
+        
         return (1 + interest_rate_aliquot) ** (1 / month_size) - 1
     elif (
         from_rate_type == InterestRateType.quarterly

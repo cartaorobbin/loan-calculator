@@ -5,11 +5,23 @@ import pytest
 from dateutil.relativedelta import relativedelta
 from loan_calculator.grossup.iof import IofGrossup
 from loan_calculator.grossup.iof_tax import loan_iof
+from loan_calculator.interest_rate import InterestRateType
 from loan_calculator.loan import Loan
 from loan_calculator.utils import count_days_between_dates
 
+@pytest.mark.parametrize("month_size", [30, None])
+@pytest.mark.parametrize("year_size", [365, 360, 256])
+@pytest.mark.parametrize("principal", [1000, 10000, 100000])
+def test_trivial_iof_grossup(principal, year_size, month_size):
 
-def test_trivial_iof_grossup(loan):
+    loan = Loan(
+        principal,
+        1.0,
+        date(2020, 1, 1),
+        year_size=year_size,
+        month_size=month_size,
+        return_dates=[date(2020, 1, 2), date(2020, 1, 3)],
+    )
 
     iof_grossup = IofGrossup(
         loan,
@@ -25,6 +37,9 @@ def test_trivial_iof_grossup(loan):
     assert iof_grossup.irr == pytest.approx(
         iof_grossup.base_loan.daily_interest_rate, rel=0.01
     )  # noqa
+
+    assert iof_grossup.grossed_up_loan.year_size == loan.year_size
+    assert iof_grossup.grossed_up_loan.daily_interest_rate == loan.daily_interest_rate
 
 
 def test_iof_grossup_252(loan_252):
@@ -75,13 +90,16 @@ def test_iof_grossup_252_analitical(loan_252):
     )  # noqa
 
 
-@pytest.mark.parametrize("principal", range(1000, 11000, 1000))
-@pytest.mark.parametrize("annual_interest_rate", range(5, 95, 5))
+@pytest.mark.parametrize("interest_rate_type", [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual])
+@pytest.mark.parametrize("principal", [1000, 11000, 1000])
+@pytest.mark.parametrize("month_size,year_size", [(30, 360,), (None, 365)])
+@pytest.mark.parametrize("interest_rate", [1.0, 1.5, 2.0])
 @pytest.mark.parametrize("instalment_number", [3, 6, 9, 12])
-def test_iof_grossup_252_5_analitical(
-    principal, annual_interest_rate, instalment_number
+def test_iof_grossup_analitical(
+    principal, interest_rate, instalment_number, year_size, month_size, interest_rate_type
 ):
 
+    interest_rate = interest_rate / 100
     start_date = date(2024, 8, 7)
     first_payment = date(2024, 8, 28)
     return_dates = [first_payment]
@@ -90,12 +108,14 @@ def test_iof_grossup_252_5_analitical(
 
     loan = Loan(
         principal,
-        annual_interest_rate / 100,
+        interest_rate,
         start_date,
-        year_size=252,
+        year_size=year_size,
+        month_size=month_size,
         return_dates=return_dates,
         count_working_days=True,
         include_end_date=True,
+        interest_rate_type=interest_rate_type,
     )
 
     iof_grossup = IofGrossup(
@@ -125,3 +145,7 @@ def test_iof_grossup_252_5_analitical(
     assert iof_grossup.grossed_up_loan.principal - iof == pytest.approx(
         principal, rel=0.000001
     )  # noqa
+
+    assert iof_grossup.grossed_up_loan.annual_interest_rate == pytest.approx(loan.annual_interest_rate)
+    assert iof_grossup.grossed_up_loan.daily_interest_rate == pytest.approx(loan.daily_interest_rate, rel=0.001)
+
