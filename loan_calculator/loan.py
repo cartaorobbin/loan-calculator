@@ -1,6 +1,8 @@
 from datetime import timedelta
+import decimal
 from enum import Enum
-
+from decimal import Decimal, ROUND_05UP, ROUND_HALF_UP
+from loan_calculator.rounds import round_half_up
 from loan_calculator.schedule import SCHEDULE_TYPE_CLASS_MAP
 from loan_calculator.schedule.base import AmortizationScheduleType
 from loan_calculator.interest_rate import (
@@ -16,7 +18,6 @@ class RoundStrategy(Enum):
     none = None
     simple = "simple"
     by_diference = "by_diference"
-
 
 
 class Loan(object):
@@ -69,11 +70,19 @@ class Loan(object):
         self.principal = principal
 
         self.annual_interest_rate = convert_interest_rate(
-            interest_rate, interest_rate_type, InterestRateType.annual, year_size, month_size
+            interest_rate,
+            interest_rate_type,
+            InterestRateType.annual,
+            year_size,
+            month_size,
         )
 
         self.daily_interest_rate = convert_interest_rate(
-            interest_rate, interest_rate_type, InterestRateType.daily, year_size, month_size
+            interest_rate,
+            interest_rate_type,
+            InterestRateType.daily,
+            year_size,
+            month_size,
         )
 
         self.start_date = start_date
@@ -146,7 +155,10 @@ class Loan(object):
     @property
     def amortizations(self):
         if self.round_strategy == RoundStrategy.simple:
-            return [round(amortization, 2) for amortization in self.amortization_schedule.amortizations]
+            return [
+                round_half_up(amortization, 2)
+                for amortization in self.amortization_schedule.amortizations
+            ]
         return self.amortization_schedule.amortizations  # pragma: no cover
 
     @property
@@ -160,3 +172,5 @@ class Loan(object):
     @property
     def total_paid(self):
         return self.amortization_schedule.total_paid  # pragma: no cover
+
+

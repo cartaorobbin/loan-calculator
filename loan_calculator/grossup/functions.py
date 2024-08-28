@@ -8,6 +8,7 @@ to very specific mathematical rule.
 
 from copy import copy
 from loan_calculator.grossup.iof_tax import loan_iof
+from loan_calculator.rounds import arredmultb
 from loan_calculator.loan import Loan
 from loan_calculator.utils import count_days_between_dates
 
@@ -314,3 +315,34 @@ def br_iof_progressive_price_grossup_analytical(
     )
 
     return float(principal[0])
+
+
+def br_iof_progressive_price_grossup_presumed(
+    net_principal,
+    daily_interest_rate,
+    daily_iof_fee,
+    complementary_iof_fee,
+    return_days,
+    service_fee,
+    return_dates,
+    amortizations,
+    capitalization_start_date,
+    annual_interest_rate,
+    year_size,
+    count_working_days,
+    include_end_date,
+    month_size,
+    round_strategy,
+    **kwargs,
+):
+
+    iof = loan_iof(
+        net_principal,
+        amortizations,
+        [count_days_between_dates(capitalization_start_date, d) for d in return_dates],
+        daily_iof_aliquot=daily_iof_fee,
+        complementary_iof_aliquot=complementary_iof_fee,
+        round_function=arredmultb,
+    )
+
+    return net_principal + iof + (iof**2) / net_principal

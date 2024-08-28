@@ -1,5 +1,3 @@
-
-
 from datetime import date
 from loan_calculator.loan import Loan, RoundStrategy
 
@@ -15,7 +13,7 @@ def test_loan_simple_round_strategy():
         count_working_days=True,
         include_end_date=True,
         amortization_schedule_type="progressive-price-schedule",
-        round_strategy=RoundStrategy.simple
+        round_strategy=RoundStrategy.simple,
     )
 
     assert loan.amortizations[0] == 497.68

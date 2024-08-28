@@ -1,3 +1,4 @@
+from loan_calculator import InterestRateType
 import pytest
 
 from loan_calculator.grossup.iof_tax import (
@@ -6,6 +7,8 @@ from loan_calculator.grossup.iof_tax import (
     loan_iof,
     amortization_schedule_iof,
 )
+from loan_calculator.loan import RoundStrategy
+from loan_calculator.utils import count_days_between_dates
 
 
 def test_amortization_iof():
@@ -18,10 +21,6 @@ def test_amortization_schedule_iof():
     ) == pytest.approx(
         2.0, rel=0.01
     )  # noqa
-
-
-def test_amortization_iof_aliquot_bound():
-    assert amortization_iof(100.0, 1, 1.0 / 10) == pytest.approx(1.5, rel=2)
 
 
 def test_complementary_iof():

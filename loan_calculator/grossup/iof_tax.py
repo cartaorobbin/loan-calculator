@@ -22,7 +22,16 @@ a fixed aliquot with its value defined by law.
 """
 
 
-def amortization_schedule_iof(amortizations, return_days, daily_iof_aliquot=0.000082):
+from loan_calculator.rounds import round_no_rounding
+
+
+def amortization_schedule_iof(
+    amortizations,
+    return_days,
+    daily_iof_aliquot=0.000082,
+    round_function=None,
+    round_digits=2,
+):
     """IOF tax over an amortization schedule.
 
     If :math:`A_1,A_2\\ldots,A_k` are the amortizations,
@@ -52,10 +61,20 @@ def amortization_schedule_iof(amortizations, return_days, daily_iof_aliquot=0.00
     r_days = return_days
     d = daily_iof_aliquot
 
-    return sum(a * min(n * d, 0.015) for a, n in zip(amts, r_days))
+    round_function = round_function or round_no_rounding
+
+    return sum(
+        round_function(a * d * min(n, 365), round_digits) for a, n in zip(amts, r_days)
+    )
 
 
-def amortization_iof(amortization, num_days, daily_iof_aliquot=0.000082):
+def amortization_iof(
+    amortization,
+    num_days,
+    daily_iof_aliquot=0.000082,
+    round_function=None,
+    round_digits=2,
+):
     """IOF tax over amortization.
 
     If :math:`A` is the amortization, :math:`I^*` is the daily IOF fee and
@@ -77,7 +96,11 @@ def amortization_iof(amortization, num_days, daily_iof_aliquot=0.000082):
         Number of days since the taxable event.
     """
 
-    return float(amortization * min(daily_iof_aliquot * num_days, 0.015))
+    round_function = round_function or round_no_rounding
+
+    return round_function(
+        float(amortization * daily_iof_aliquot * min(num_days, 365)), round_digits
+    )
 
 
 def complementary_iof(principal, complementary_iof_fee=0.0038):
@@ -102,7 +125,13 @@ def complementary_iof(principal, complementary_iof_fee=0.0038):
 
 
 def loan_iof(
-    principal, amortizations, return_days, daily_iof_aliquot, complementary_iof_aliquot
+    principal,
+    amortizations,
+    return_days,
+    daily_iof_aliquot,
+    complementary_iof_aliquot,
+    round_function=None,
+    round_digits=2,
 ):
     """The total IOF of a loan.
 
@@ -130,10 +159,15 @@ def loan_iof(
         Complementary IOF aliquot. Its value is defined by law.
     """
 
+    round_function = round_function or round_no_rounding
+
     p = principal
-    d_iof = daily_iof_aliquot
     c_iof = complementary_iof_aliquot
 
-    return c_iof * p + sum(
-        a * min(n * d_iof, 0.015) for a, n in zip(amortizations, return_days)
+    return c_iof * p + amortization_schedule_iof(
+        amortizations,
+        return_days,
+        daily_iof_aliquot=daily_iof_aliquot,
+        round_function=round_function,
+        round_digits=round_digits,
     )

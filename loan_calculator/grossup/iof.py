@@ -10,6 +10,7 @@ from loan_calculator.grossup.functions import (
     br_iof_progressive_price_grossup,
     br_iof_constant_amortization_grossup,
     br_iof_progressive_price_grossup_analytical,
+    br_iof_progressive_price_grossup_presumed,
 )
 from loan_calculator.schedule import (
     RegressivePriceSchedule,
@@ -98,6 +99,9 @@ class IofGrossup(BaseGrossup):
             },
             "analytical": {
                 ProgressivePriceSchedule: br_iof_progressive_price_grossup_analytical,
+            },
+            "presumed": {
+                ProgressivePriceSchedule: br_iof_progressive_price_grossup_presumed,
             },
         }
         return Loan(

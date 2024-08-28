@@ -159,13 +159,16 @@ def test_convert_interest_rate_monthly_to_annual(month_size, year_size_type, exp
     ) == pytest.approx(expected, rel=1e-3)
 
 
-
-@pytest.mark.parametrize('year_size', [YearSizeType.banker, YearSizeType.commercial])
-@pytest.mark.parametrize('month_size', [None])
-@pytest.mark.parametrize('from_', [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual])
-@pytest.mark.parametrize('to_', [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual])
+@pytest.mark.parametrize("year_size", [YearSizeType.banker, YearSizeType.commercial])
+@pytest.mark.parametrize("month_size", [None])
+@pytest.mark.parametrize(
+    "from_", [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual]
+)
+@pytest.mark.parametrize(
+    "to_", [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual]
+)
 def test_convert_to_and_back_again(from_, to_, month_size, year_size):
-    
+
     orig = 0.10
 
     rate_1 = convert_interest_rate(
@@ -186,17 +189,22 @@ def test_convert_to_and_back_again(from_, to_, month_size, year_size):
     assert rate_2 == pytest.approx(orig)
 
 
-
-
-@pytest.mark.parametrize('year_size', [YearSizeType.banker, YearSizeType.commercial])
-@pytest.mark.parametrize('month_size', [None])
-@pytest.mark.parametrize('from_', [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual])
-@pytest.mark.parametrize('to_', [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual])
-@pytest.mark.parametrize('between_', [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual])
+@pytest.mark.parametrize("year_size", [YearSizeType.banker, YearSizeType.commercial])
+@pytest.mark.parametrize("month_size", [None])
+@pytest.mark.parametrize(
+    "from_", [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual]
+)
+@pytest.mark.parametrize(
+    "to_", [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual]
+)
+@pytest.mark.parametrize(
+    "between_",
+    [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual],
+)
 def test_convert_many_times(from_, to_, between_, year_size, month_size):
-    
+
     orig = 0.10
-    
+
     rate_1 = convert_interest_rate(
         orig,
         from_,
@@ -223,11 +231,11 @@ def test_convert_many_times(from_, to_, between_, year_size, month_size):
 
 
 def test_convert_many_times_mimic_grosup():
-    
+
     orig = 0.10
     year_size = YearSizeType.banker
     month_size = 30
-    
+
     rate_1 = convert_interest_rate(
         orig,
         InterestRateType.monthly,
@@ -257,6 +265,5 @@ def test_convert_many_times_mimic_grosup():
         year_size=year_size,
         month_size=month_size,
     )
-
 
     assert rate_3 == pytest.approx(expected, rel=1e-5)
