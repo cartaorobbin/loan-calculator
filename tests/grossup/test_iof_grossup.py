@@ -137,11 +137,7 @@ def test_iof_grossup_presumed(principal, start_date, expected, build_loan):
         strategy="presumed",
     )
 
-    assert iof_grossup.grossed_up_principal == pytest.approx(
-        expected, rel=0.0000001
-    )  # noqa
-
-    # assert iof_grossup.grossed_up_principal == 10098.87
+    assert iof_grossup.grossed_up_principal == expected
 
 
 @pytest.mark.parametrize(

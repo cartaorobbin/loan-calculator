@@ -345,4 +345,4 @@ def br_iof_progressive_price_grossup_presumed(
         round_function=arredmultb,
     )
 
-    return net_principal + iof + (iof**2) / net_principal
+    return round(net_principal + iof + (iof**2) / net_principal, 2)
