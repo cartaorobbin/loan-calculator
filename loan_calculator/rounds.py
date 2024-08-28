@@ -3,7 +3,7 @@ from math import floor
 
 
 def arredmultb(number: float, digits: float) -> float:
-    return floor(number * 100) / 100
+    return round(floor(number * 100) / 100, digits)
 
 
 def round_no_rounding(number: float, digits: int) -> float:
