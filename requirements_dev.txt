@@ -12,3 +12,4 @@ Click
 pytest
 pytest-runner
 dateutils
+scipy
