@@ -1,4 +1,3 @@
-from calendar import month
 import pytest
 
 from loan_calculator.interest_rate import (
@@ -162,10 +161,12 @@ def test_convert_interest_rate_monthly_to_annual(month_size, year_size_type, exp
 @pytest.mark.parametrize("year_size", [YearSizeType.banker, YearSizeType.commercial])
 @pytest.mark.parametrize("month_size", [None])
 @pytest.mark.parametrize(
-    "from_", [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual]
+    "from_", [InterestRateType.monthly,
+              InterestRateType.daily, InterestRateType.annual]
 )
 @pytest.mark.parametrize(
-    "to_", [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual]
+    "to_", [InterestRateType.monthly,
+            InterestRateType.daily, InterestRateType.annual]
 )
 def test_convert_to_and_back_again(from_, to_, month_size, year_size):
 
@@ -192,10 +193,12 @@ def test_convert_to_and_back_again(from_, to_, month_size, year_size):
 @pytest.mark.parametrize("year_size", [YearSizeType.banker, YearSizeType.commercial])
 @pytest.mark.parametrize("month_size", [None])
 @pytest.mark.parametrize(
-    "from_", [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual]
+    "from_", [InterestRateType.monthly,
+              InterestRateType.daily, InterestRateType.annual]
 )
 @pytest.mark.parametrize(
-    "to_", [InterestRateType.monthly, InterestRateType.daily, InterestRateType.annual]
+    "to_", [InterestRateType.monthly,
+            InterestRateType.daily, InterestRateType.annual]
 )
 @pytest.mark.parametrize(
     "between_",
