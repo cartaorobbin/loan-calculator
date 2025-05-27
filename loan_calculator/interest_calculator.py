@@ -99,6 +99,13 @@ def calculate_iof_grossup_interest_rate(
         Complementary IOF tax aliquot (default 0.0038)
     service_fee_aliquot : float, optional
         Service fee aliquot (default 0.0)
+    year_size : YearSizeType, optional
+        The year size type (default is commercial)
+    amortization_schedule_type : AmortizationScheduleType, optional
+        The amortization schedule type (default is progressive price schedule)
+    strategy : str, optional
+        The strategy to use for the calculation (default is numerical)
+    interest_rate_type : InterestRateType, optional
 
     Returns
     -------
