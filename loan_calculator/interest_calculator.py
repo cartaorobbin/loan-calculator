@@ -75,9 +75,9 @@ def calculate_iof_grossup_interest_rate(
     complementary_iof_aliquot: float = 0.0038,
     service_fee_aliquot: float = 0.0,
     year_size: YearSizeType = YearSizeType.commercial,
-    month_size: int = 30,
     amortization_schedule_type: AmortizationScheduleType = AmortizationScheduleType.progressive_price_schedule,
     strategy: str = "numerical",
+    interest_rate_type: InterestRateType = InterestRateType.annual,
 ) -> float:
     """
     Calculate the interest rate for a loan with IOF tax grossup that will generate
@@ -112,7 +112,7 @@ def calculate_iof_grossup_interest_rate(
             interest_rate=float(rate[0]),
             start_date=start_date,
             return_dates=due_dates,
-            interest_rate_type=InterestRateType.annual,
+            interest_rate_type=interest_rate_type,
             year_size=year_size,
             amortization_schedule_type=amortization_schedule_type
         )
